@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap");
+@import "tailwindcss";
+
+/* ✅ Tailwind v4 theme definition */
+@theme {
+  --color-primary: #F7F8E5;
+  --color-secondary: #E8EDD6;
+  --color-tertiary: #6D6A61;
+  --color-accent: #232D23;
+}
+
+.dark {
+  --color-primary: #020202;
+  --color-secondary: #232D23;
+  --color-tertiary: #6D6A61;
+  --color-accent: #F7F8E5;
+}
+
