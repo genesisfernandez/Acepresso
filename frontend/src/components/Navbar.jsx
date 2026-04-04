@@ -53,7 +53,12 @@ export default function Navbar() {
 
           {/* Logo */}
           <div className="flex items-center">
-            <h2 className="text-accent font-semibold text-lg tracking-wide">Dashboard</h2>
+            {/* <h2 className="text-accent font-semibold text-lg tracking-wide">Dashboard</h2> */}
+            <img
+                  alt="profile"
+                  src="./kapeCo-logo.jpg"
+                  className="h-22 w-22 rounded-full border-2 border-secondary hover:border-accent transition"
+                />
           </div>
 
           {/* Desktop nav */}
@@ -82,7 +87,7 @@ export default function Navbar() {
               <MenuButton className="flex rounded-full focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-primary">
                 <img
                   alt="profile"
-                  src="./kapeCo-logo.jpg"
+                  src="./default-pfp.jpg"
                   className="h-12 w-12 rounded-full border-2 border-secondary hover:border-accent transition"
                 />
               </MenuButton>
