@@ -7,4 +7,4 @@ const router = express.Router();
 router.post("/login", login);
 router.get("/verify", verifyToken, verify);
 
-export default router;
+export default router; 

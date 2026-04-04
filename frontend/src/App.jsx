@@ -5,6 +5,8 @@ import EmployeeDashboard from "./pages/EmployeeDashboard";
 import DashboardLayout from "./layout/DashboardLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
+import Employees from "./pages/Employees.jsx";
+import Reports from "./pages/Reports.jsx";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
           }
         >
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/employees" element={<Employees />} />
+          <Route path="/reports" element={<Reports />} />
         </Route>
 
         {/* Employee routes */}

@@ -115,7 +115,7 @@ const Login = () => {
         </p>
 
         {/* Divider */}
-        <div className="w-full h-px bg-white/[0.03] mb-11" />
+        <div className="w-full h-px bg-white/03 mb-11" />
 
         {/* Heading row */}
         <div className="flex justify-between items-center mb-4">
@@ -128,9 +128,9 @@ const Login = () => {
             <em className="italic text-green-500/90">in.</em>
           </h1>
           <img
-            src="/kapeCo-logo.jpg"
+            src="/Acepresso-logo-dark.png"
             alt="Logo"
-            className="w-[85px] h-[85px] rounded-full object-cover border border-green-500/25 shrink-0"
+            className="w-[120px] h-[120px] rounded-full object-cover border border-green-500/25 shrink-0"
           />
         </div>
 
