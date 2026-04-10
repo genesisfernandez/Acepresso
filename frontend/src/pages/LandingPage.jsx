@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import MailIcon from "@mui/icons-material/Mail";
 import LocationPinIcon from "@mui/icons-material/LocationPin";
 import PhoneIcon from "@mui/icons-material/Phone";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -317,7 +319,7 @@ const LandingPage = () => {
                 </p>
                 <div className="flex items-center justify-between pt-4 border-t border-[#F7F8E5]/10">
                   <span className="uppercase text-lg tracking-[0.25em] text-[#6D6A61]/60 group-hover:text-[#F7F8E5]/70">
-                    $24.99
+                    ₱79.99
                   </span>
                   <div className="w-12 h-12 border-2 border-[#F7F8E5]/20 rounded-xl flex items-center justify-center group-hover:bg-[#F7F8E5]/15 group-hover:rotate-90 group-hover:scale-110 transition-all duration-500 backdrop-blur-sm shadow-lg">
                     <span className="text-xl">→</span>
@@ -345,13 +347,13 @@ const LandingPage = () => {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          <div>
-            <div className="space-y-8 mb-16 lg:mb-20">
+          <div className="flex justify-center lg:justify-start">
+            <div className="space-y-8 ">
               {[
                 {
                   icon: <MailIcon />,
                   title: "Email",
-                  detail: "fernandez.genesis2830@gmail.com",
+                  detail: "acepresso.cafe@gmail.com",
                 },
                 {
                   icon: <LocationPinIcon />,
@@ -384,25 +386,47 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="relative">
-            <div className="w-full h-96 lg:h-[500px] bg-gradient-to-br from-[#232D23]/70 via-[#6D6A61]/20 to-[#020202]/50 rounded-3xl border-2 border-[#F7F8E5]/10 p-12 lg:p-20 flex items-center justify-center relative overflow-hidden shadow-2xl shadow-black/40 hover:shadow-glow">
-              {/* Animated coffee cup */}
-              <div className="relative z-10 text-center animate-float-slow">
-                <div className="w-32 h-32 lg:w-44 lg:h-44 mx-auto mb-12 bg-gradient-to-br from-[#F7F8E5]/25 to-[#F7F8E5]/10 rounded-3xl border-4 border-[#F7F8E5]/25 backdrop-blur-xl flex items-center justify-center shadow-2xl shadow-[#F7F8E5]/25 hover:scale-110 transition-all duration-500">
-                  <span className="text-5xl lg:text-6xl">☕</span>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-[Cormorant_Garamond] text-3xl lg:text-4xl tracking-tight mb-2">
-                    Crafted Daily
-                  </h3>
-                  <p className="text-[#6D6A61]/80 uppercase tracking-[0.2em] text-lg">
-                    Perfection in every cup
-                  </p>
-                </div>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3951.107525614614!2d120.820539!3d16.0544459!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDAzJzEzLjjEsMTIwwrA0OScxOS40Wi!5e0!3m2!1sen!2sph!4v1730000000000!5m2!1sen!2sph"
+              className="w-full h-96 lg:h-[500px] rounded-3xl border-2 border-[#F7F8E5]/10 shadow-2xl shadow-black/40 hover:shadow-glow"
+              style={{
+                filter: "brightness(0.6) contrast(1.2) saturate(0.8)",
+                transition: "all 0.3s ease",
+              }}
+              title="Acepresso Location"
+              loading="lazy"
+              allowFullScreen=""
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+
+            {/* Overlay gradient for better text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#020202]/60 via-transparent to-transparent rounded-3xl pointer-events-none" />
+
+            {/* Location marker overlay */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#F7F8E5]/30 to-[#F7F8E5]/10 rounded-3xl border-4 border-[#F7F8E5]/40 backdrop-blur-xl flex items-center justify-center shadow-2xl shadow-[#F7F8E5]/30 animate-pulse">
+                <div className="w-8 h-8 bg-gradient-to-r from-[#F7F8E5] to-[#F7F8E5]/50 rounded-full shadow-lg animate-bounce" />
               </div>
-              {/* Steam effect */}
-              <div className="absolute inset-0">
-                <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 w-px h-32 bg-gradient-to-b from-[#F7F8E5]/30 to-transparent animate-steam opacity-60" />
-                <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 w-px h-24 bg-gradient-to-b from-[#F7F8E5]/20 to-transparent animate-steam delay-500 opacity-40" />
+            </div>
+
+            {/* Location info overlay */}
+            <div className="absolute bottom-6 left-6 right-6 lg:left-12 lg:right-12 pointer-events-none z-20">
+              <div className="bg-[#232D23]/80 backdrop-blur-md border border-[#F7F8E5]/20 rounded-2xl p-6 shadow-2xl shadow-black/40">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#F7F8E5]/20 to-[#F7F8E5]/10 rounded-xl border-2 border-[#F7F8E5]/30 flex items-center justify-center backdrop-blur-sm shadow-lg">
+                    <LocationPinIcon className="text-[#F7F8E5]/80 text-xl" />
+                  </div>
+                  <div>
+                    <h3 className="font-[Cormorant_Garamond] text-xl lg:text-2xl tracking-tight mb-1">
+                      Find Us Here
+                    </h3>
+                    <p className="text-[#6D6A61]/90 uppercase tracking-[0.15em] text-sm">
+                      Purok 6, Batchelor East
+                      <br />
+                      Natividad, Pangasinan
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -509,13 +533,23 @@ const LandingPage = () => {
                 © 2024 Acepresso. Crafted with precision. All rights reserved.
               </p>
               <div className="flex items-center gap-6">
-                {["📘", "💭", "📷", "🔗"].map((icon, i) => (
+                {[
+                  {
+                    icon: <FacebookIcon />,
+                    link: "https://www.facebook.com/profile.php?id=61574374155552",
+                  },
+                  {
+                    icon: <InstagramIcon />,
+                    link: "https://www.facebook.com/jann.rosquita",
+                  },
+                ].map((icon, i) => (
                   <a
                     key={i}
-                    href="#"
+                    href={icon.link}
                     className="w-14 h-14 border border-[#F7F8E5]/15 rounded-xl flex items-center justify-center hover:bg-[#232D23]/70 hover:scale-110 transition-all duration-400 text-[#6D6A61]/60 hover:text-[#F7F8E5] shadow-md hover:shadow-[#F7F8E5]/20 backdrop-blur-sm"
+                    target="_blank"
                   >
-                    <span className="text-xl">{icon}</span>
+                    <span className="text-xl">{icon.icon}</span>
                   </a>
                 ))}
               </div>
