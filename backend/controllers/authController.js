@@ -30,9 +30,6 @@ const login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    console.log("TOKEN: ", token);
-    
-
     return res.status(200).json({
       success: true,
       token,

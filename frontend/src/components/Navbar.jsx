@@ -56,7 +56,7 @@ export default function Navbar() {
             {/* <h2 className="text-accent font-semibold text-lg tracking-wide">Dashboard</h2> */}
             <img
                   alt="profile"
-                  src="./kapeCo-logo.jpg"
+                  src={darkMode ? "./Acepresso-logo-light.png" : "./Acepresso-logo-dark.png"}
                   className="h-22 w-22 rounded-full border-2 border-secondary hover:border-accent transition"
                 />
           </div>

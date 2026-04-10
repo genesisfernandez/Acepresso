@@ -35,5 +35,5 @@ Thumbs.db
 # =========================
 # OPTIONAL
 # =========================
-coverage/
-.env
+# coverage/
+# .env

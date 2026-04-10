@@ -8,6 +8,8 @@ const employeeSchema = new mongoose.Schema(
     department: { type: String, required: true },
     salary:     { type: Number, required: true },
     status:     { type: String, enum: ["Active", "Inactive"], default: "Active" },
+    visible: { type: Boolean, default: true }, // 👈 soft delete flag
+
   },
   { timestamps: true }
 );

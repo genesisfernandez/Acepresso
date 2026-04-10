@@ -7,12 +7,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import Employees from "./pages/Employees.jsx";
 import Reports from "./pages/Reports.jsx";
+import LandingPage from "./pages/LandingPage.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
 
         {/* Admin routes */}

@@ -6,9 +6,6 @@ import { useAuth } from "../context/authContext";
 const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
-  console.log("asd:", useAuth());
-
-
   if (loading) return <div>Loading...</div>;
 
   if (!user || user.role !== "admin") {

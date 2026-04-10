@@ -9,9 +9,30 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const [isLogin, setIsLogin] = useState(true);
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const backgroundImages = [
+    "/login-background.jpg",
+    "/login-background2.jpg",
+    "/login-background3.jpg",
+    "/login-background4.jpg",
+    "/login-background5.jpg",
+  ];
+  const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
   const { login, user, loading } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBgIndex(
+        (prevIndex) => (prevIndex + 1) % backgroundImages.length,
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (!loading && user) {
@@ -26,32 +47,59 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password }
-      );
-      if (response.data.success) {
-        login(response.data.user, response.data.token);
-        if (response.data.user.role === "admin") {
-          navigate("/admin-dashboard");
+    
+    if (isLogin) {
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/auth/login",
+          { email, password },
+        );
+        if (response.data.success) {
+          login(response.data.user, response.data.token);
+        }
+      } catch (error) {
+        if (error.response?.data && !error.response.data.success) {
+          setError(error.response.data.error);
         } else {
-          navigate("/employee-dashboard");
+          setError("Server Error");
         }
       }
-    } catch (error) {
-      if (error.response?.data && !error.response.data.success) {
-        setError(error.response.data.error);
-      } else {
-        setError("Server Error");
+    } else {
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/auth/signup",
+          { email, password },
+        );
+        if (response.data.success) {
+          login(response.data.user, response.data.token);
+        }
+      } catch (error) {
+        if (error.response?.data && !error.response.data.success) {
+          setError(error.response.data.error);
+        } else {
+          setError("Server Error");
+        }
       }
     }
   };
 
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+    setError(null);
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setFocused(null);
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <p className="text-[#6D6A61] font-mono text-xs tracking-widest uppercase animate-pulse">
+      <div className="min-h-screen flex items-center justify-center bg-[#020202]">
+        <p className="text-sm tracking-widest uppercase animate-pulse font-[DM_Mono] text-[#6D6A61]">
           Loading...
         </p>
       </div>
@@ -59,212 +107,337 @@ const Login = () => {
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0a0a0a]"
-      style={{ fontFamily: "'DM Mono', monospace" }}
-    >
-      {/* Grid background */}
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      {/* Glow */}
-      <div
-        className="absolute w-[600px] h-[600px] rounded-full pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(34,197,94,0.08) 0%, transparent 70%)",
-        }}
-      />
-
-      {/* Corner marks */}
-      {[
-        "top-8 left-8",
-        "top-8 right-8 rotate-90",
-        "bottom-8 left-8 -rotate-90",
-        "bottom-8 right-8 rotate-180",
-      ].map((pos, i) => (
-        <div key={i} className={`absolute w-10 h-10 ${pos}`}>
-          <div className="absolute top-0 left-0 w-full h-px bg-green-500/50" />
-          <div className="absolute top-0 left-0 w-px h-full bg-green-500/50" />
-        </div>
-      ))}
-
-      {/* Card */}
-      <div
-        className="relative z-10 w-[420px] px-12 py-13 bg-[#0f0f0f]/95 border border-white/[0.07]"
-        style={{
-          boxShadow: "0 0 0 1px rgba(34,197,94,0.05), 0 40px 80px rgba(0,0,0,0.6)",
-          animation: "fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both",
-          padding: "52px 48px",
-        }}
-      >
-        {/* Eyebrow */}
-        <p
-          className="text-center text-2xl italic uppercase text-green-500/70 mb-3"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}
-        >
-          Electronic Management System
-        </p>
-
-        {/* Divider */}
-        <div className="w-full h-px bg-white/03 mb-11" />
-
-        {/* Heading row */}
-        <div className="flex justify-between items-center mb-4">
-          <h1
-            className="text-[42px] font-light leading-[1.05] text-[#f0ece4] tracking-tight"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
-          >
-            Log
-            <br />
-            <em className="italic text-green-500/90">in.</em>
-          </h1>
-          <img
-            src="/Acepresso-logo-dark.png"
-            alt="Logo"
-            className="w-[120px] h-[120px] rounded-full object-cover border border-green-500/25 shrink-0"
-          />
+    <div className="min-h-screen flex overflow-hidden font-[DM_Mono] bg-[#020202] text-[#F7F8E5]">
+      {/* ── LEFT PANEL ── 60% width, HIDDEN on tablet & below */}
+      <div className="hidden lg:flex lg:w-[60%] relative flex-col justify-between overflow-hidden bg-[#232D23] border-r border-[#F7F8E5]/7 p-10 lg:p-12">
+        {/* Sliding Background Images */}
+        <div className="absolute inset-0">
+          {backgroundImages.map((imgSrc, index) => (
+            <img
+              key={imgSrc}
+              src={imgSrc}
+              alt="Login background"
+              className={`w-full h-full object-cover transition-all duration-1000 ease-in-out absolute inset-0 ${
+                index === currentBgIndex
+                  ? "opacity-30 scale-105"
+                  : "opacity-0 scale-95"
+              } mix-blend-overlay`}
+            />
+          ))}
         </div>
 
-        {/* Short accent divider */}
+        {/* Noise Overlay */}
         <div
-          className="w-8 h-px mb-11"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            background: "linear-gradient(90deg, rgba(34,197,94,0.6), transparent)",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")`,
+            backgroundSize: "180px 180px",
           }}
         />
 
-        {/* Error */}
-        {error && (
-          <p className="text-red-400 text-xs tracking-wider mb-4 font-mono">
-            {error}
-          </p>
-        )}
-
-        {/* Form */}
-        <form onSubmit={handleSubmit}>
-          {/* Email */}
-          <div className="mb-5">
-            <label
-              htmlFor="email"
-              className={`block text-[9px] tracking-[0.25em] uppercase mb-2 transition-colors duration-200 ${
-                focused === "email"
-                  ? "text-green-500/80"
-                  : "text-white/30"
-              }`}
+        <div className="relative z-10 flex flex-col items-center justify-center flex-1 gap-12 text-center px-8">
+          <div className="flex items-center justify-center">
+            <div
+              className="relative flex items-center justify-center rounded-full font-[Cormorant_Garamond] italic"
+              style={{
+                width: 250,
+                height: 250,
+                border: "1px solid rgba(247,248,229,0.2)",
+                background: "rgba(247,248,229,0.05)",
+              }}
             >
-              Email address
-            </label>
-            <div className="relative">
-              <input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setFocused("email")}
-                onBlur={() => setFocused(null)}
-                required
-                className="w-full bg-white/[0.03] border border-white/[0.08] text-[#f0ece4] text-[13px] font-light px-4 py-[14px] outline-none transition-all duration-200 placeholder:text-white/15 focus:border-green-500/40 focus:bg-green-500/[0.03]"
-                style={{ fontFamily: "'DM Mono', monospace", letterSpacing: "0.03em" }}
-              />
-              {/* Animated bottom accent */}
-              <div
-                className="absolute bottom-0 left-0 h-px transition-all duration-[400ms] ease-out"
-                style={{
-                  width: focused === "email" ? "100%" : "0%",
-                  background: "linear-gradient(90deg, rgba(34,197,94,0.8), transparent)",
-                }}
+              <img
+                src="/Acepresso-logo-light.png"
+                alt="Acepresso"
+                className="max-w-[80%] max-h-[80%] object-contain"
               />
             </div>
           </div>
 
-          {/* Password */}
-          <div className="mb-5">
-            <label
-              htmlFor="password"
-              className={`block text-[9px] tracking-[0.25em] uppercase mb-2 transition-colors duration-200 ${
-                focused === "password"
-                  ? "text-green-500/80"
-                  : "text-white/30"
-              }`}
+          <div className="flex flex-col items-center gap-6">
+            <h1
+              className="font-[Cormorant_Garamond] text-6xl md:text-7xl lg:text-8xl font-normal leading-tight tracking-[-0.02em]"
+              style={{ lineHeight: 0.92 }}
             >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={() => setFocused("password")}
-                onBlur={() => setFocused(null)}
-                required
-                className="w-full bg-white/[0.03] border border-white/[0.08] text-[#f0ece4] text-[13px] font-light px-4 py-[14px] pr-16 outline-none transition-all duration-200 placeholder:text-white/15 focus:border-green-500/40 focus:bg-green-500/[0.03]"
-                style={{ fontFamily: "'DM Mono', monospace", letterSpacing: "0.03em" }}
-              />
-              <div
-                className="absolute bottom-0 left-0 h-px transition-all duration-[400ms] ease-out"
-                style={{
-                  width: focused === "password" ? "100%" : "0%",
-                  background: "linear-gradient(90deg, rgba(34,197,94,0.8), transparent)",
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none text-white/25 text-[9px] tracking-[0.15em] uppercase cursor-pointer transition-colors duration-200 hover:text-green-500/70 px-1"
-                style={{ fontFamily: "'DM Mono', monospace" }}
-              >
-                {showPassword ? "hide" : "show"}
-              </button>
-            </div>
+              Coffee with
+              <br />
+              <em className="italic text-[#F7F8E5]/45">purpose.</em>
+            </h1>
+            <p className="uppercase text-base md:text-lg tracking-[0.18em] text-[#6D6A61]/70 leading-[2.2] max-w-md">
+              Brewed Like An Ace
+            </p>
           </div>
+        </div>
 
-          {/* Forgot */}
-          <div className="text-right mb-8 -mt-2">
-            
-            <a  href="#"
-              className="text-[9px] tracking-[0.2em] uppercase text-white/20 no-underline transition-colors duration-200 hover:text-green-500/60"
-              style={{ fontFamily: "'DM Mono', monospace" }}
-            >
-              Forgot password?
-            </a>
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            className="w-full py-4 bg-green-500/90 text-[#0a0a0a] text-[10px] font-medium tracking-[0.3em] uppercase cursor-pointer relative overflow-hidden transition-all duration-200 hover:bg-green-500 border-none"
-            style={{ fontFamily: "'DM Mono', monospace" }}
-          >
-            Log in
-          </button>
-        </form>
+        <div className="relative z-10 flex items-center gap-2">
+          <div
+            className="w-1.5 h-1.5 rounded-full bg-[#F7F8E5] opacity-35 animate-pulse"
+            style={{ animationDuration: "3s" }}
+          />
+          <span className="uppercase text-xs tracking-[0.2em] text-[#6D6A61]/50">
+            All systems operational
+          </span>
+        </div>
       </div>
 
-      {/* Tagline */}
-      <p
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[9px] tracking-[0.25em] uppercase text-white/10 whitespace-nowrap"
-        style={{ fontFamily: "'DM Mono', monospace" }}
-      >
-        Secure Access Portal
-      </p>
+      {/* ── RIGHT PANEL ── Full width on tablet & below, 40% on desktop */}
+      <div className="flex-1 lg:w-[40%] w-full relative flex flex-col justify-center p-8 md:p-12 lg:p-14 bg-[#020202]">
+        {/* Right panel effects - adjusted for full width on mobile */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")`,
+            backgroundSize: "180px 180px",
+          }}
+        />
+        <div
+          className="absolute pointer-events-none w-[300px] h-[300px] lg:w-[420px] lg:h-[420px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(35,45,35,0.5) 0%, transparent 70%)",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+        />
+        {/* Right panel decorative elements - ADD z-index */}
+        {[
+          { className: "top-5 right-5 rotate-90 z-10" },
+          { className: "bottom-5 right-5 rotate-180 z-10" },
+        ].map((c, i) => (
+          <div key={i} className={`absolute w-3.5 h-3.5 ${c.className}`}>
+            <div className="absolute top-0 left-0 w-full h-px bg-[#F7F8E5]/12" />
+            <div className="absolute top-0 left-0 h-full w-px bg-[#F7F8E5]/12" />
+          </div>
+        ))}
 
-      {/* fadeUp keyframe */}
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(24px); }
-          to   { opacity: 1; transform: translateY(0); }
+        {/* Dynamic Form - full width centered on mobile */}
+        <div className="relative z-10 w-full max-w-md lg:max-w-sm mx-auto px-4 animate-fade-up">
+          <p className="uppercase text-xs tracking-[0.32em] text-[#6D6A61]/50 mb-2.5">
+            {isLogin ? "Secure access" : "Create account"}
+          </p>
+          <h2 className="font-[Cormorant_Garamond] text-2xl md:text-3xl lg:text-4xl font-normal mb-1 tracking-[-0.01em]">
+            {isLogin ? "Welcome back." : "Hello there."}
+          </h2>
+          <p className="text-sm tracking-[0.14em] text-[#6D6A61]/45 mb-9">
+            {isLogin 
+              ? "Sign in to your account to continue" 
+              : "Create your Acepresso account"
+            }
+          </p>
+
+          <div className="w-7 h-px mb-8 bg-gradient-to-r from-[#F7F8E5]/50 to-transparent" />
+
+          {error && (
+            <div className="text-xs tracking-[0.1em] text-[#c97b7b] mb-4 pl-2.5 py-1.5 border-l border-[#c97b7b]/35 bg-[#c97b7b]/4 font-[DM_Mono]">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
+            <div>
+              <label
+                htmlFor="email"
+                className={`block text-xs uppercase tracking-[0.28em] mb-2 transition-colors ${
+                  focused === "email"
+                    ? "text-[#F7F8E5]/60"
+                    : "text-[#6D6A61]/45"
+                }`}
+              >
+                Email address
+              </label>
+              <div className="relative">
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="acepresso@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setFocused("email")}
+                  onBlur={() => setFocused(null)}
+                  required
+                  className="w-full bg-transparent border-0 border-b-2 p-3 md:p-2.5 outline-none transition-all duration-300 font-[DM_Mono] text-lg font-light tracking-[0.04em] rounded-b-lg border-[#F7F8E5]/25 focus:border-[#F7F8E5]/25 focus:rounded-b-lg"
+                />
+                <div
+                  className="absolute bottom-0 left-0 h-px bg-gradient-to-r from-[#F7F8E5]/60 to-transparent transition-all duration-[450ms] rounded-b-full"
+                  style={{
+                    width: focused === "email" ? "100%" : "0%",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="password"
+                className={`block text-xs uppercase tracking-[0.28em] mb-2 transition-colors ${
+                  focused === "password"
+                    ? "text-[#F7F8E5]/60"
+                    : "text-[#6D6A61]/45"
+                }`}
+              >
+                Password
+              </label>
+              <div className="relative">
+                <div className="relative flex items-center bg-[#020202]/50 px-3 py-2.5 border-b-2 border-[#F7F8E5]/25 rounded-b-lg focus-within:border-[#F7F8E5]/25 focus-within:rounded-b-lg transition-all duration-300">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="•••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onFocus={() => setFocused("password")}
+                    onBlur={() => setFocused(null)}
+                    required
+                    className="flex-1 bg-transparent border-0 p-0 outline-none font-[DM_Mono] text-lg font-light tracking-[0.04em] text-[#F7F8E5]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="px-2 py-1 bg-[#232D23]/50 border border-[#F7F8E5]/20 rounded-md text-xs uppercase tracking-[0.15em] font-[DM_Mono] font-light text-[#6D6A61]/50 hover:text-[#F7F8E5]/70 hover:bg-[#232D23]/70 transition-all duration-200 cursor-pointer whitespace-nowrap ml-2"
+                  >
+                    {showPassword ? "hide" : "show"}
+                  </button>
+                </div>
+                <div
+                  className="absolute bottom-0 left-0 h-px bg-gradient-to-r from-[#F7F8E5]/60 to-transparent transition-all duration-[450ms] rounded-b-full -mt-px"
+                  style={{
+                    width: focused === "password" ? "100%" : "0%",
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Confirm Password */}
+            {!isLogin && (
+              <div>
+                <label
+                  htmlFor="confirmPassword"
+                  className={`block text-xs uppercase tracking-[0.28em] mb-2 transition-colors ${
+                    focused === "confirmPassword"
+                      ? "text-[#F7F8E5]/60"
+                      : "text-[#6D6A61]/45"
+                  }`}
+                >
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="•••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onFocus={() => setFocused("confirmPassword")}
+                    onBlur={() => setFocused(null)}
+                    required
+                    className="w-full bg-transparent border-0 border-b-2 p-3 md:p-2.5 outline-none transition-all duration-300 font-[DM_Mono] text-lg font-light tracking-[0.04em] rounded-b-lg border-[#F7F8E5]/25 focus:border-[#F7F8E5]/25 focus:rounded-b-lg"
+                  />
+                  <div
+                    className="absolute bottom-0 left-0 h-px bg-gradient-to-r from-[#F7F8E5]/60 to-transparent transition-all duration-[450ms] rounded-b-full"
+                    style={{
+                      width: focused === "confirmPassword" ? "100%" : "0%",
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center py-1.5 mb-8">
+              <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  className="appearance-none w-3 h-3 border border-[#F7F8E5]/12 bg-transparent rounded-sm cursor-pointer relative
+                    checked:bg-[#232D23]/80 checked:border-[#F7F8E5]/30"
+                />
+                <span className="uppercase text-xs tracking-[0.15em] text-[#6D6A61]/30">
+                  {isLogin ? "Remember me" : "Agree to terms"}
+                </span>
+              </label>
+              {isLogin ? (
+                <a
+                  href="#"
+                  className="uppercase text-xs tracking-[0.15em] text-[#6D6A61]/25 hover:text-[#F7F8E5]/45 transition-colors no-underline"
+                >
+                  Forgot password?
+                </a>
+              ) : (
+                <a
+                  href="#"
+                  className="uppercase text-xs tracking-[0.15em] text-[#6D6A61]/25 hover:text-[#F7F8E5]/45 transition-colors no-underline"
+                >
+                  Terms & Privacy
+                </a>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="submit"
+                className="flex-1 uppercase relative overflow-hidden py-3.5 px-4 bg-[#232D23] border border-[#F7F8E5]/10 
+                  font-[DM_Mono] text-sm font-medium tracking-[0.32em] hover:bg-[#2e3d2e] hover:border-[#F7F8E5]/18 
+                  transition-all duration-200 cursor-pointer"
+              >
+                {isLogin ? "Log in" : "Create Account"}
+              </button>
+              <div className="flex items-center justify-center w-9 h-9 border border-[#F7F8E5]/8 text-[#6D6A61]/40 text-lg shrink-0">
+                →
+              </div>
+            </div>
+          </form>
+
+          <div className="mt-12 pt-8 border-t border-[#F7F8E5]/10 text-center">
+            <button
+              type="button"
+              onClick={toggleForm}
+              className="uppercase text-sm tracking-[0.2em] text-[#6D6A61]/40 hover:text-[#F7F8E5]/60 transition-colors duration-200 font-[DM_Mono] bg-transparent border-none cursor-pointer"
+            >
+              {isLogin 
+                ? "No account? Click here to sign up" 
+                : "Have account? Click here to log in"
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes fade-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-up {
+          animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        input[type="checkbox"]:checked::after {
+          content: "";
+          position: absolute;
+          top: 1px;
+          left: 1px;
+          width: 4px;
+          height: 7px;
+          border-right: 1px solid #f7f8e5;
+          border-bottom: 1px solid #f7f8e5;
+          transform: rotate(40deg);
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 1023px) {
+          /* Form takes full screen height and centers perfectly */
+          .flex-1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
       `}</style>
     </div>
